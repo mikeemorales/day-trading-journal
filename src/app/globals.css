@@ -6,8 +6,8 @@
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-start-rgb: 47, 47, 47;
+  --background-end-rgb: 47, 47, 47;
 
   --primary-glow: conic-gradient(
     from 180deg at 50% 50%,
@@ -87,12 +87,11 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: #2F2F2F;
+}
+
+.white-icon {
+  color: white !important;
 }
 
 a {
