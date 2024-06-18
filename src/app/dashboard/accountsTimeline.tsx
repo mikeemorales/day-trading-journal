@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography } from '@mui/material';
+import { Container } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 
 const AccountsTimeline = ({ dailyData }: { dailyData: number[] }) => {
@@ -18,10 +18,6 @@ const AccountsTimeline = ({ dailyData }: { dailyData: number[] }) => {
 
   return (
     <Container>
-      {/* <Typography sx={{ mb: 3, borderBottom: 'none', fontSize: 'small' }}>Accounts Timeline</Typography> */}
-      {/* <Box boxShadow={8}>
-        <Typography sx={{ mb: 3, borderBottom: 'none', fontSize: 'small' }}>Accounts Timeline</Typography>
-      </Box> */}
       <LineChart
         series={[
           {

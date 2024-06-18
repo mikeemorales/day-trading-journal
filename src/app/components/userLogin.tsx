@@ -22,7 +22,7 @@ const Login: React.FC = () => {
       <Container maxWidth={false}>
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 8 }}>
           <Typography variant="h4" gutterBottom sx={{ mb: 5 }}>
-            Trading Journal Login
+            Profit Logs
           </Typography>
           <Button variant="contained" color="primary" onClick={handleGoogleSignIn}>
             Sign in with Google

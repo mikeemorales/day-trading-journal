@@ -8,10 +8,6 @@ const MonthlyPnLChart = ({ weeklyTotals }: { weeklyTotals: number[] }) => {
 
   return (
     <Container>
-        {/* <Typography sx={{ mb: 3, borderBottom: 'none', fontSize: 'small' }}>Monthly P/L</Typography> */}
-        {/* <Box boxShadow={8}>
-          <Typography sx={{ mb: 3, borderBottom: 'none', fontSize: 'small' }}>Monthly P/L</Typography>
-        </Box> */}
         <BarChart
             xAxis={[
                 { 

@@ -1,5 +1,5 @@
 "use client";
-import { AppBar, Box, Button, Container, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Menu, MenuItem, Typography } from '@mui/material';
+import { AppBar, Box, Button, Container, Grid, Toolbar, Menu, MenuItem } from '@mui/material';
 import React, { useState } from 'react';
 import WeeklyDataGrid from './weeklyDataGrid';
 import AccountNames from './accounts';
@@ -11,7 +11,6 @@ import AccountsTimeline from './accountsTimeline';
 import AddchartIcon from '@mui/icons-material/Addchart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import SummarizeIcon from '@mui/icons-material/Summarize';
-import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
@@ -66,9 +65,6 @@ const MainLayout: React.FC = () => {
     <AccountProvider>
       <AppBar position="fixed" sx={{ backgroundColor: '#2F2F2F' }}>
         <Toolbar>
-          {/* <Button onClick={toggleDrawer(true)}>
-            <MenuIcon sx={{ color: 'white' }} />
-          </Button> */}
           <Button>
             <DashboardIcon onClick={isDashboardView} sx={{ color: 'white' }} />
           </Button>
@@ -91,9 +87,6 @@ const MainLayout: React.FC = () => {
             <MenuItem onClick={isAccountSettingsView}>Account Settings</MenuItem>
             <MenuItem onClick={handleLogout} color='error'>Logout</MenuItem>
           </Menu>
-          {/* <Drawer open={open} onClose={toggleDrawer(false)}>
-            {DrawerList}
-          </Drawer> */}
         </Toolbar>
       </AppBar>
       <Container maxWidth={false} sx={{ height: '100vh', padding: 0, margin: 0, mt: 8, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -113,7 +106,6 @@ const MainLayout: React.FC = () => {
             />            
           </Grid>
           <Grid xs={4} sx={{ backgroundColor: '#2F2F2F', mt: -5 }}>
-            {/* <MonthlyDataGrid monthlyTotals={monthlyTotals} setMonthlyTotals={setMonthlyTotals} /> */}
             <BalanceAndProjections />
           </Grid>
           <Grid xs={8} sx={{ backgroundColor: '#2F2F2F', mb: 8, mt: 2 }}>
