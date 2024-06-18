@@ -1,6 +1,6 @@
 "use client";
 import * as React from 'react';
-import { Box, Container, Grid, Typography } from '@mui/material';
+import { Container, Grid, Typography } from '@mui/material';
 import { useAccountContext } from '../components/accountsContext';
 
 const BalanceAndProjections: React.FC = () => {

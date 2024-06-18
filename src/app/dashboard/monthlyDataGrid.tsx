@@ -15,7 +15,6 @@ const MonthlyDataGrid = ({ monthlyTotals, setMonthlyTotals }: { monthlyTotals: n
 
   return (
     <Container maxWidth={false}>
-      {/* <Typography sx={{ mb: 2.5, mt: -2, ml: 2, borderBottom: 'none', fontSize: 'small' }}>Monthly Recap</Typography> */}
       <TableContainer>
         <Table size='small'>
           <TableHead>
@@ -57,9 +56,6 @@ const MonthlyDataGrid = ({ monthlyTotals, setMonthlyTotals }: { monthlyTotals: n
         </Table>
       </TableContainer>
       <Box sx={{ display: 'flex', flexDirection: 'row-reverse', mt: 1 }}>
-       {/* <IconButton onClick={handleClearMonthlyTotals} color="error" size="small">
-          <DeleteForeverIcon />
-        </IconButton> */}
         <Button onClick={handleClearMonthlyTotals} variant='outlined' size='small' color='error' sx={{ mt: 1, mb: 1, height: 25, width: 80, fontSize: 8, border: '0.5px solid red', textWrap: 'nowrap' }}>Clear Months</Button>
       </Box>
     </Container>
