@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Box, Button, Typography } from '@mui/material';
-import { auth } from '@/utils/firebase';
+import { auth } from '@/utils/firebaseConfig';
 import { useRouter } from 'next/navigation';
 
 const AccountSettings = () => {
