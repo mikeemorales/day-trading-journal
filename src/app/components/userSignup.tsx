@@ -1,39 +1,55 @@
-import React, { useState, FormEvent } from 'react';
-import { auth } from '@/utils/firebase'
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+"use client"
+import React, { useState } from 'react';
+import { registerWithEmailAndPassword, loginWithEmailAndPassword, logout } from '../../utils/firebaseAuth';
 
-const Signup: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+const AuthForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isRegister, setIsRegister] = useState(true);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      if (isRegister) {
+        await registerWithEmailAndPassword(email, password);
+        alert('User registered successfully');
+      } else {
+        await loginWithEmailAndPassword(email, password);
+        alert('User logged in successfully');
+      }
     } catch (error) {
-      console.error('Failed to sign up:', error);
+      if (error instanceof Error) {
+        alert('Error: ' + error.message);
+      } else {
+        alert('An unknown error occurred');
+      }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
-      <button type="submit">Sign Up</button>
-    </form>
+    <div>
+      <h1>{isRegister ? 'Register' : 'Login'}</h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button type="submit">{isRegister ? 'Register' : 'Login'}</button>
+      </form>
+      <button onClick={() => setIsRegister(!isRegister)}>
+        Switch to {isRegister ? 'Login' : 'Register'}
+      </button>
+      <button onClick={logout}>Logout</button>
+    </div>
   );
 };
 
-export default Signup;
+export default AuthForm;
