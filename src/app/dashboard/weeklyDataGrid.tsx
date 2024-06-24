@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -9,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import { Box, Button, Container, FormControl, MenuItem, Select, TextField } from '@mui/material';
 import { useAccountContext } from '../components/accountsContext';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { useInputValuesContext } from '../components/weeklyDataGridInputContext';
 
 interface RowData {
   weeks: string,
@@ -56,7 +57,8 @@ const WeeklyDataGrid = ({
   const [rows, setRows] = useState<RowData[]>([]);
   const { liquidity, updateLiquidity } = useAccountContext();
   const [disabledMonths, setDisabledMonths] = useState<boolean[]>(Array(12).fill(false));
-  const [dailyPnL, setDailyPnL] = useState<number | null>(null);
+  const { weeklyInputValues, setWeeklyInputValues } = useInputValuesContext();
+  // const [dailyPnL, setDailyPnL] = useState<number | null>(null); 
 
   useEffect(() => {
     const updateRows = () => {
@@ -81,11 +83,10 @@ const WeeklyDataGrid = ({
       (parseFloat(row.week5) || 0)
     );
     
-    const totalWeeklyChange = newWeeklyTotals.reduce((acc, total) => acc + total, 0) - weeklyTotals.reduce((acc, total) => acc + total, 0);
-    updateLiquidity(totalWeeklyChange);
+    updateLiquidity(newWeeklyTotals.reduce((acc, total) => acc + total, 0));
     setWeeklyTotals(newWeeklyTotals);
   }, [rows, setWeeklyTotals]);
-  
+
   const handleDailyPnLChange = (value: string | number, rowIndex: number, weekIndex: number) => {
     const newValue = value === '' ? '' : parseFloat(String(value)) || '';
     const newRows = [...rows];
@@ -103,7 +104,7 @@ const WeeklyDataGrid = ({
     setDailyData(newData);
 
     if (weekIndex >= 0 && weekIndex < 5) {
-      setDailyPnLValue(parseFloat(newValue.toString())); // Assuming newValue is a string or number
+      setDailyPnLValue(parseFloat(newValue.toString()));
     }
   };
 
@@ -119,7 +120,6 @@ const WeeklyDataGrid = ({
     setRows(newRows);
     setWeeklyTotals([0, 0, 0, 0, 0]);
     setDisabledMonths(Array(12).fill(false));
-    updateLiquidity(-weeklyTotals.reduce((acc, total) => acc + total, 0));
     setDailyPnLValue(null);
   };
 
@@ -128,8 +128,7 @@ const WeeklyDataGrid = ({
       const newMonthlyTotals = [...monthlyTotals];
       const newDisabledMonths = [...disabledMonths];
       
-      const weeklyTotal = weeklyTotals.reduce((acc, total) => acc + total, 0);
-      newMonthlyTotals[selectedMonth] += weeklyTotal;
+      newMonthlyTotals[selectedMonth] += weeklyTotals.reduce((acc, total) => acc + total, 0);
       setMonthlyTotals(newMonthlyTotals);
       newDisabledMonths[selectedMonth] = true;
       setDisabledMonths(newDisabledMonths);

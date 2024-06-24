@@ -44,7 +44,7 @@ const AccountNames = () => {
                 <TableCell sx={{ fontSize: 'small', color: 'white' }}>Account</TableCell>
                 <TableCell align="center" sx={{ fontSize: 'small', color: 'white' }}>Capital</TableCell>
                 <TableCell align="center" sx={{ fontSize: 'small', color: 'white' }}>Liquidity</TableCell>
-                <TableCell align="center" sx={{ fontSize: 'small', color: 'white' }}>Goal</TableCell>
+                <TableCell align="center" sx={{ fontSize: 'small', color: 'white' }}>Goal / Mo.</TableCell>
                 <TableCell align="center" sx={{ fontSize: 'small', color: 'white' }}>Actions</TableCell>
               </TableRow>
             </TableHead>

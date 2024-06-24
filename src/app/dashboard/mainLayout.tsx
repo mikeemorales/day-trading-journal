@@ -4,13 +4,12 @@ import React, { useState } from 'react';
 import WeeklyDataGrid from './weeklyDataGrid';
 import AccountNames from './accounts';
 import { AccountProvider } from '../components/accountsContext';
+import { InputValuesProvider } from '../components/weeklyDataGridInputContext'
 import MonthlyPnLChart from './monthlyPnLChart';
 import BalanceAndProjections from './balanceAndProjections';
 import MonthlyDataGrid from './monthlyDataGrid';
 import AccountsTimeline from './accountsTimeline';
-import AddchartIcon from '@mui/icons-material/Addchart';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import SummarizeIcon from '@mui/icons-material/Summarize';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
@@ -20,6 +19,7 @@ import { useRouter } from 'next/navigation';
 import TradePercentage from './tradePercentage';
 import BoxLiquidity from './boxLiquidity';
 import BoxDailyPnL from './boxDailyPnL';
+import BoxWinLossRatio from './boxWinLossRatio';
 
 const MainLayout: React.FC = () => {
   const [weeklyTotals, setWeeklyTotals] = useState<number[]>([0, 0, 0, 0, 0]);
@@ -57,14 +57,9 @@ const MainLayout: React.FC = () => {
     router.push('/dashboard/accountSettings')
   }
 
-  const drawerItems = [
-    { name: 'Journal', icon: <AddchartIcon /> },
-    { name: 'Account Summary', icon: <SummarizeIcon /> },
-    { name: 'Trade Logs', icon: <ShowChartIcon /> },
-    { name: 'Notes', icon: <TextSnippetIcon /> },
-  ];
 
   return (
+    <InputValuesProvider>
     <AccountProvider>
       <AppBar position="fixed" sx={{ backgroundColor: '#2F2F2F' }}>
         <Toolbar>
@@ -94,13 +89,16 @@ const MainLayout: React.FC = () => {
       </AppBar>
       <Container maxWidth={false} sx={{ height: '100%', padding: 0, margin: 0, mt: 8, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Grid container>
-          <Grid xs={4} sx={{  mt: 5 }}>
+          <Grid xs={3} sx={{  mt: 5 }}>
             <BoxLiquidity/>
           </Grid>
-          <Grid xs={4} sx={{ mt: 5 }}>
+          <Grid xs={3} sx={{ mt: 5 }}>
           <BoxDailyPnL dailyPnL={dailyPnL} />
           </Grid>
-          <Grid xs={4} sx={{ mt: 5, mb: 5 }}>
+          <Grid xs={3} sx={{ mt: 5, mb: 5 }}>
+          <BoxLiquidity/>
+          </Grid>
+          <Grid xs={3} sx={{ mt: 5, mb: 5 }}>
           <BoxLiquidity/>
           </Grid>
 
@@ -143,6 +141,7 @@ const MainLayout: React.FC = () => {
         </Grid>
       </Container>
     </AccountProvider>
+    </InputValuesProvider>
   );
 };
 
