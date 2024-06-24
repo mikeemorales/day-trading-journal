@@ -1,8 +1,6 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Container, Button,
-} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Container, Button } from '@mui/material';
 import { useAccountContext } from '../components/accountsContext';
 import AccountForm from './accountsForm';
 
@@ -26,11 +24,13 @@ const AccountNames = () => {
     const newAccount = createData(name, accountType, monthlyGoal);
     setRows([newAccount, ...Array(4).fill(createData())]);
     setAccountCreated(true);
+    updateLiquidity(accountType);
   };
 
   const handleClearAccount = () => {
     setRows(Array(5).fill(createData()));
     setAccountCreated(false);
+    updateLiquidity(-liquidity);
   };
 
   return (
@@ -53,7 +53,7 @@ const AccountNames = () => {
                 <TableRow key={index} sx={{ '& td, & th': { border: 0 }, mb: 5, height: '2.5rem', backgroundColor: index % 2 === 0 ? '#272727' : '#1F1F1F' }}>
                   <TableCell component="th" scope="row" sx={{ fontSize: 'x-small', color: 'white' }}>{row.name || ''}</TableCell>
                   <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.accountType || ''}</TableCell>
-                  <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.name ? row.liquidity + liquidity : ''}</TableCell>
+                  <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.name ? liquidity : ''}</TableCell>
                   <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.monthlyGoal || ''}</TableCell>
                   <TableCell align="center">
                     {index === 0 && row.name && (

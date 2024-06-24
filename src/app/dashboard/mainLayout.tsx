@@ -18,6 +18,8 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import { getAuth, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import TradePercentage from './tradePercentage';
+import BoxLiquidity from './boxLiquidity';
+import BoxDailyPnL from './boxDailyPnL';
 
 const MainLayout: React.FC = () => {
   const [weeklyTotals, setWeeklyTotals] = useState<number[]>([0, 0, 0, 0, 0]);
@@ -25,6 +27,7 @@ const MainLayout: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
   const [dailyData, setDailyData] = useState<number[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [dailyPnL, setDailyPnL] = useState<number | null>(null);
 
   const router = useRouter();
 
@@ -89,12 +92,22 @@ const MainLayout: React.FC = () => {
           </Menu>
         </Toolbar>
       </AppBar>
-      <Container maxWidth={false} sx={{ height: '100vh', padding: 0, margin: 0, mt: 8, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Container maxWidth={false} sx={{ height: '100%', padding: 0, margin: 0, mt: 8, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <Grid container>
-          <Grid xs={4} sx={{ backgroundColor: '#2F2F2F', mt: -9 }}>
+          <Grid xs={4} sx={{  mt: 5 }}>
+            <BoxLiquidity/>
+          </Grid>
+          <Grid xs={4} sx={{ mt: 5 }}>
+          <BoxDailyPnL dailyPnL={dailyPnL} />
+          </Grid>
+          <Grid xs={4} sx={{ mt: 5, mb: 5 }}>
+          <BoxLiquidity/>
+          </Grid>
+
+          <Grid xs={4} sx={{ backgroundColor: '#2F2F2F' }}>
             <AccountNames />
           </Grid>
-          <Grid xs={8} sx={{ backgroundColor: '#2F2F2F', mt: -9 }}>
+          <Grid xs={8} sx={{ backgroundColor: '#2F2F2F' }}>
             <WeeklyDataGrid
                 setWeeklyTotals={setWeeklyTotals}
                 weeklyTotals={weeklyTotals}
@@ -103,6 +116,7 @@ const MainLayout: React.FC = () => {
                 selectedMonth={selectedMonth}
                 handleMonthChange={handleMonthChange}
                 setDailyData={setDailyData}
+                setDailyPnLValue={setDailyPnL}
             />            
           </Grid>
           <Grid xs={4} sx={{ backgroundColor: '#2F2F2F', mt: -5 }}>
@@ -112,7 +126,7 @@ const MainLayout: React.FC = () => {
             <MonthlyDataGrid monthlyTotals={monthlyTotals} setMonthlyTotals={setMonthlyTotals} />
           </Grid>
 
-          <Box sx={{ width: '100%', boxShadow: '0px 0px 20px #1e1e1e', borderRadius: 3, mt: -7, pb: 5 }}>
+          <Box sx={{ width: '100%', boxShadow: '0px 0px 10px #1e1e1e', borderRadius: 3, mt: -7, pb: 5, mb: 3 }}>
             <Grid container>
               <Grid xs={4} sx={{ backgroundColor: '#2F2F2F' }}>
                 <TradePercentage/>

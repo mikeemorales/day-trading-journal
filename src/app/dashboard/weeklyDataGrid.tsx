@@ -42,6 +42,7 @@ const WeeklyDataGrid = ({
   selectedMonth,
   handleMonthChange,
   setDailyData,
+  setDailyPnLValue,
 }: {
   setWeeklyTotals: React.Dispatch<React.SetStateAction<number[]>>;
   weeklyTotals: number[];
@@ -50,10 +51,12 @@ const WeeklyDataGrid = ({
   selectedMonth: number;
   handleMonthChange: (event: SelectChangeEvent<number>) => void;
   setDailyData: React.Dispatch<React.SetStateAction<number[]>>;
+  setDailyPnLValue: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const [rows, setRows] = useState<RowData[]>([]);
   const { liquidity, updateLiquidity } = useAccountContext();
   const [disabledMonths, setDisabledMonths] = useState<boolean[]>(Array(12).fill(false));
+  const [dailyPnL, setDailyPnL] = useState<number | null>(null);
 
   useEffect(() => {
     const updateRows = () => {
@@ -78,7 +81,8 @@ const WeeklyDataGrid = ({
       (parseFloat(row.week5) || 0)
     );
     
-    updateLiquidity(newWeeklyTotals.reduce((acc, total) => acc + total, 0));
+    const totalWeeklyChange = newWeeklyTotals.reduce((acc, total) => acc + total, 0) - weeklyTotals.reduce((acc, total) => acc + total, 0);
+    updateLiquidity(totalWeeklyChange);
     setWeeklyTotals(newWeeklyTotals);
   }, [rows, setWeeklyTotals]);
   
@@ -97,6 +101,10 @@ const WeeklyDataGrid = ({
       (parseFloat(row.week5) || 0)
     );
     setDailyData(newData);
+
+    if (weekIndex >= 0 && weekIndex < 5) {
+      setDailyPnLValue(parseFloat(newValue.toString())); // Assuming newValue is a string or number
+    }
   };
 
   const handleClearAll = () => {
@@ -111,6 +119,8 @@ const WeeklyDataGrid = ({
     setRows(newRows);
     setWeeklyTotals([0, 0, 0, 0, 0]);
     setDisabledMonths(Array(12).fill(false));
+    updateLiquidity(-weeklyTotals.reduce((acc, total) => acc + total, 0));
+    setDailyPnLValue(null);
   };
 
   const handleAddToMonth = () => {
@@ -118,7 +128,8 @@ const WeeklyDataGrid = ({
       const newMonthlyTotals = [...monthlyTotals];
       const newDisabledMonths = [...disabledMonths];
       
-      newMonthlyTotals[selectedMonth] += weeklyTotals.reduce((acc, total) => acc + total, 0);
+      const weeklyTotal = weeklyTotals.reduce((acc, total) => acc + total, 0);
+      newMonthlyTotals[selectedMonth] += weeklyTotal;
       setMonthlyTotals(newMonthlyTotals);
       newDisabledMonths[selectedMonth] = true;
       setDisabledMonths(newDisabledMonths);
@@ -189,7 +200,7 @@ const WeeklyDataGrid = ({
                   );
                 })}
                 <TableCell align="center" sx={{ fontSize: 'small', color: 'white', backgroundColor: '#34423375' }}>{calculateWeeklyTotal(row)}</TableCell>
-                <TableCell align="center" sx={{ fontSize: 'small', color: 'white', backgroundColor: '#3D5B8975' }}>{index === 0 ? liquidity : ''}</TableCell>
+                <TableCell align="center" sx={{ fontSize: 'small', color: 'white', backgroundColor: '#3D5B8975' }}>{index === 0 ? weeklyTotals.reduce((acc, total) => acc + total, 0) : ''}</TableCell>
               </TableRow>
             ))}
           </TableBody>
