@@ -12,7 +12,8 @@ const BoxWinLossRatio: React.FC = () => {
         Wins / Losses
       </Typography>
       <Typography variant='h5' fontWeight='bold' sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-        <Box component='span' sx={{ color: '#0093FF', mr: 2 }}>{winsCount}</Box>:
+        <Box component='span' sx={{ color: '#0093FF', mr: 2 }}>{winsCount}</Box>
+        :
         <Box component='span' sx={{ color: '#FF4040', ml: 2 }}>{lossesCount}</Box>
       </Typography>
     </Box>

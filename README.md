@@ -17,7 +17,7 @@ Profit Logs aims to help day traders keep track of their daily profits and losse
 ## Get Started
 Clone the 'test' branch to your local machine
 ```
-git clone -b test https://github.com/mikeemorales/day-trading-journal.git
+git clone https://github.com/mikeemorales/day-trading-journal.git
 ```
 install dependencies
 ```

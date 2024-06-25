@@ -51,9 +51,9 @@ const AccountNames = () => {
             <TableBody>
               {rows.map((row, index) => (
                 <TableRow key={index} sx={{ '& td, & th': { border: 0 }, mb: 5, height: '2.5rem', backgroundColor: index % 2 === 0 ? '#272727' : '#1F1F1F' }}>
-                  <TableCell component="th" scope="row" sx={{ fontSize: 'x-small', color: 'white' }}>{row.name || ''}</TableCell>
+                  <TableCell sx={{ fontSize: 'x-small', color: 'white' }}>{row.name || ''}</TableCell>
                   <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.accountType || ''}</TableCell>
-                  <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.name ? liquidity : ''}</TableCell>
+                  <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.name ? liquidity + row.accountType : ''}</TableCell>
                   <TableCell align="center" sx={{ fontSize: 'x-small', color: 'white' }}>{row.monthlyGoal || ''}</TableCell>
                   <TableCell align="center">
                     {index === 0 && row.name && (
