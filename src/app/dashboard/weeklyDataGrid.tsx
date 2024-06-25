@@ -9,18 +9,16 @@ import TableRow from '@mui/material/TableRow';
 import { Box, Button, Container, FormControl, MenuItem, Select, TextField } from '@mui/material';
 import { useAccountContext } from '../components/accountsContext';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { useInputValuesContext } from '../components/weeklyDataGridInputContext';
+import { useWinsLosses } from '../components/winsAndLossesContext';
 
 interface RowData {
-  weeks: string,
-  week1: string,
-  week2: string,
-  week3: string,
-  week4: string,
-  week5: string,
-  weeklyTotal: number,
-  monthlyTotal: number | null
-};
+  weeks: string;
+  week1: string;
+  week2: string;
+  week3: string;
+  week4: string;
+  week5: string;
+}
 
 const createData = (
   weeks: string,
@@ -28,11 +26,17 @@ const createData = (
   week2: string,
   week3: string,
   week4: string,
-  week5: string,
-  weeklyTotal: number,
-  monthlyTotal: number | null
+  week5: string
 ): RowData => {
-  return { weeks, week1, week2, week3, week4, week5, weeklyTotal, monthlyTotal };
+  return { weeks, week1, week2, week3, week4, week5 };
+};
+
+export const getWinCount = (weekIndex: number, winArray: number[]): number => {
+  return winArray.filter((_, index) => index === weekIndex).length;
+};
+
+export const getLossCount = (weekIndex: number, lossArray: number[]): number => {
+  return lossArray.filter((_, index) => index === weekIndex).length;
 };
 
 const WeeklyDataGrid = ({
@@ -55,19 +59,18 @@ const WeeklyDataGrid = ({
   setDailyPnLValue: React.Dispatch<React.SetStateAction<number | null>>;
 }) => {
   const [rows, setRows] = useState<RowData[]>([]);
-  const { liquidity, updateLiquidity } = useAccountContext();
+  const { updateLiquidity } = useAccountContext();
+  const { updateWins, updateLosses, winsCount, lossesCount } = useWinsLosses();
   const [disabledMonths, setDisabledMonths] = useState<boolean[]>(Array(12).fill(false));
-  const { weeklyInputValues, setWeeklyInputValues } = useInputValuesContext();
-  // const [dailyPnL, setDailyPnL] = useState<number | null>(null); 
 
   useEffect(() => {
     const updateRows = () => {
       const newRows: RowData[] = [
-        createData('WEEK 1', '', '', '', '', '', 0, 0),
-        createData('WEEK 2', '', '', '', '', '', 0, null),
-        createData('WEEK 3', '', '', '', '', '', 0, null),
-        createData('WEEK 4', '', '', '', '', '', 0, null),
-        createData('WEEK 5', '', '', '', '', '', 0, null),
+        createData('WEEK 1', '', '', '', '', ''),
+        createData('WEEK 2', '', '', '', '', ''),
+        createData('WEEK 3', '', '', '', '', ''),
+        createData('WEEK 4', '', '', '', '', ''),
+        createData('WEEK 5', '', '', '', '', ''),
       ];
       setRows(newRows);
     };
@@ -75,26 +78,48 @@ const WeeklyDataGrid = ({
   }, []);
 
   useEffect(() => {
-    const newWeeklyTotals = rows.map(row =>
+    calculateAndUpdateTotals(rows);
+  }, [rows]);
+
+  const calculateAndUpdateTotals = (updatedRows: RowData[]) => {
+    const newWeeklyTotals = updatedRows.map(row =>
       (parseFloat(row.week1) || 0) +
       (parseFloat(row.week2) || 0) +
       (parseFloat(row.week3) || 0) +
       (parseFloat(row.week4) || 0) +
       (parseFloat(row.week5) || 0)
     );
-    
-    updateLiquidity(newWeeklyTotals.reduce((acc, total) => acc + total, 0));
+
     setWeeklyTotals(newWeeklyTotals);
-  }, [rows, setWeeklyTotals]);
+    const totalLiquidity = newWeeklyTotals.reduce((acc, total) => acc + total, 0);
+    updateLiquidity(totalLiquidity);
+
+    let dailyWinsCount = 0;
+    let dailyLossesCount = 0;
+
+    updatedRows.forEach(row => {
+      ['week1', 'week2', 'week3', 'week4', 'week5'].forEach(weekKey => {
+        const dailyValue = parseFloat(row[weekKey as keyof typeof row] || '0');
+        if (dailyValue > 0) {
+          dailyWinsCount++;
+        } else if (dailyValue < 0) {
+          dailyLossesCount++;
+        }
+      });
+    });
+
+    updateWins(dailyWinsCount);
+    updateLosses(dailyLossesCount);
+  };
 
   const handleDailyPnLChange = (value: string | number, rowIndex: number, weekIndex: number) => {
     const newValue = value === '' ? '' : parseFloat(String(value)) || '';
-    const newRows = [...rows];
+    const updatedRows = [...rows];
     const weekKey = `week${weekIndex + 1}` as keyof RowData;
-    (newRows[rowIndex][weekKey] as string) = newValue.toString();
-    setRows(newRows);
-  
-    const newData = newRows.map(row =>
+    updatedRows[rowIndex][weekKey] = newValue.toString();
+    setRows(updatedRows);
+
+    const newData = updatedRows.map(row =>
       (parseFloat(row.week1) || 0) +
       (parseFloat(row.week2) || 0) +
       (parseFloat(row.week3) || 0) +
@@ -127,7 +152,7 @@ const WeeklyDataGrid = ({
     if (!disabledMonths[selectedMonth]) {
       const newMonthlyTotals = [...monthlyTotals];
       const newDisabledMonths = [...disabledMonths];
-      
+
       newMonthlyTotals[selectedMonth] += weeklyTotals.reduce((acc, total) => acc + total, 0);
       setMonthlyTotals(newMonthlyTotals);
       newDisabledMonths[selectedMonth] = true;
@@ -169,9 +194,6 @@ const WeeklyDataGrid = ({
                   const weekKey = `week${weekIndex}` as keyof RowData;
                   const cellValue = row[weekKey];
                   const numericValue = typeof cellValue === 'number' ? cellValue : parseFloat(cellValue as string);
-                  function calculateWeeklyTotal(arg0: RowData): React.ReactNode {
-                    throw new Error('Function not implemented.');
-                  }
 
                   return (
                     <TableCell key={`week${weekIndex}`} align="center">
@@ -180,10 +202,10 @@ const WeeklyDataGrid = ({
                           variant="standard"
                           type="number"
                           value={row[weekKey]}
-                          onChange={(e) => handleDailyPnLChange(parseFloat(e.target.value), index, weekIndex - 1)}
+                          onChange={(e) => handleDailyPnLChange(e.target.value, index, weekIndex - 1)}
                           InputProps={{
                             disableUnderline: true,
-                            sx: { borderBottom: 'none', fontSize: 'small', color: numericValue < 0 ? '#FF4040' : '#0093FF'  },
+                            sx: { borderBottom: 'none', fontSize: 'small', color: numericValue < 0 ? '#FF4040' : '#0093FF' },
                           }}
                           sx={{
                             width: '50%',
@@ -205,10 +227,10 @@ const WeeklyDataGrid = ({
           </TableBody>
         </Table>
       </TableContainer>
-  
+
       <Box sx={{ display: 'flex', flexDirection: 'row-reverse', mt: 2 }}>
-	      <Button variant="outlined" onClick={handleClearAll} color="error" sx={{ height: 25, width: 80, fontSize: 8, border: '0.5px solid red', textWrap: 'nowrap' }}>Clear Weeks</Button>
-        <Button variant="outlined" onClick={handleAddToMonth} sx={{ mr: 2, height: 25, width: 100, fontSize: 8, color: 'white', border: '0.5px solid white', textWrap: 'nowrap' }}  disabled={disabledMonths[selectedMonth]}>Add To Months</Button>
+        <Button variant="outlined" onClick={handleClearAll} color="error" sx={{ height: 25, width: 80, fontSize: 8, border: '0.5px solid red', textWrap: 'nowrap' }}>Clear Weeks</Button>
+        <Button variant="outlined" onClick={handleAddToMonth} sx={{ mr: 2, height: 25, width: 100, fontSize: 8, color: 'white', border: '0.5px solid white', textWrap: 'nowrap' }} disabled={disabledMonths[selectedMonth]}>Add To Months</Button>
         <FormControl variant="outlined" size="small" sx={{ mr: 2 }}>
           <Select
             value={selectedMonth}
@@ -227,10 +249,8 @@ const WeeklyDataGrid = ({
           </Select>
         </FormControl>
       </Box>
-
     </Container>
   );
-  
 };
 
 export default WeeklyDataGrid;

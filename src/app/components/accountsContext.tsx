@@ -19,7 +19,7 @@ export const AccountProvider = ({ children }: { children: React.ReactNode }) => 
   const [liquidity, setLiquidity] = useState<number>(0);
 
   const updateLiquidity = (newLiquidity: number) => {
-    setLiquidity((prevLiquidity) => prevLiquidity + newLiquidity);
+    setLiquidity(newLiquidity);
   };
 
   return (
